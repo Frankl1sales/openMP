@@ -33,9 +33,18 @@ help:
 	@echo "  make install - Instala as dependências necessárias (GCC e OpenMP)"
 
 install:
-	@echo "Instalando dependências..."
-	# Comandos para instalação das dependências (exemplo para sistemas baseados em Debian)
-	sudo apt-get update
-	sudo apt-get install -y gcc libomp-dev
-	@echo "Dependências instaladas com sucesso."
-
+	@echo "Verificando dependências..."
+	@if ! command -v gcc >/dev/null 2>&1; then \
+		echo "GCC não encontrado. Instalando GCC..."; \
+		sudo apt-get update; \
+		sudo apt-get install -y gcc; \
+	else \
+		echo "GCC já está instalado."; \
+	fi
+	@if ! ldconfig -p | grep -q libomp; then \
+		echo "Biblioteca OpenMP não encontrada. Instalando libomp-dev..."; \
+		sudo apt-get install -y libomp-dev; \
+	else \
+		echo "Biblioteca OpenMP já está instalada."; \
+	fi
+	@echo "Dependências verificadas e instaladas (se necessário)."
